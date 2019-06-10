@@ -9,8 +9,8 @@
   "author": "Soham Zemse <sohamzemse143@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "bip39": "^3.0.2",
-    "ethers": "^4.0.29",
-    "hdkey": "^1.1.1"
+    "bip39": "3.0.2",
+    "ethers": "4.0.29",
+    "hdkey": "1.1.1"
   }
 }
