@@ -5,6 +5,7 @@ This package is intended to create a object prototype that will have the followi
 2. To get privateKey0, privateKey1, privateKey2, privateKey3. These private keys can therefore be used with web3 or ethers to sign transactions.
 */
 const bip39 = require('bip39');
+const ethereum = require('ethereumjs-wallet');
 const hdkey = require('hdkey');
 const ethers = require('ethers');
 // const generateMnemonic = strength => console.log(strength, bip39.generateMnemonic(strength).split(' ').length);
@@ -17,38 +18,68 @@ const ethers = require('ethers');
 // 256 24
 
 const strength = 192;
-const mnemonic = bip39.generateMnemonic(strength);
+//const mnemonic = bip39.generateMnemonic(strength);
+const mnemonic = 'garment relax intact favorite tragic hunt chapter circle energy debate kid joy';
+
+const getRootFromMnemonic = async(mnemonic) => {
+  const seed = await bip39.mnemonicToSeed(mnemonic);
+  const root = hdkey.fromMasterSeed(seed); // Has a class of HDKey
+  return root;
+};
+
+(async()=>{
+  const seed = await bip39.mnemonicToSeed(mnemonic);
+  const root = hdkey.fromMasterSeed(seed);
+  console.log(root);
+  const addressNode = root.derive("m/44'/60'/0'/0/0");
+  const wallet = addressNode.getWallet();
+  console.log(wallet);
+})();
+
+
+
+
+
+
+
 
 const getMasterPrivateKeyFromMnemonic = async(mnemonic) => {
   const seed = await bip39.mnemonicToSeed(mnemonic);
   //console.log('Seed:',seed.toString('hex'));
 
   const root = hdkey.fromMasterSeed(seed); // Has a class of HDKey
-  const masterPrivateKey = root.privateKey.toString('hex');
-  //console.log('Master Private Key:', masterPrivateKey);
 
+  //const masterPrivateKey = root._hdkey._privateKey.toString('hex');
+  //console.log('Master Private Key:', masterPrivateKey);
+  //console.log(root);
   return masterPrivateKey;
 };
 
-const getPrivateKeyAtIndexFromMaster = async(masterPrivateKey, i)=>{
-  //need root node here.
-  const root = hdkey.fromExtendedKey(masterPrivateKey);
 
-  const addressNode = root.derive(`m/44'/60'/0'/0/${i}`);
-  //console.log('Address Node', addressNode);
-  const privateKey = addressNode._privateKey.toString('hex');
-  //const privateKey = '2d3edea1b2c0f8a399350985be554ecfd568f7009636d610a8e271973c17b27e';
-  //console.log(privateKey);
 
-  return privateKey;
-};
 
-(async()=>{
-  const masterPrivateKey = await getMasterPrivateKeyFromMnemonic(mnemonic);
-  console.log(masterPrivateKey);
-  // const firstPrivateKey = await getPrivateKeyAtIndexFromMaster(Base58.decode(masterPrivateKey), 0);
-  // console.log(firstPrivateKey);
-})();
+
+
+
+// const getPrivateKeyAtIndexFromMaster = async(masterPrivateKey, i)=>{
+//   //need root node here.
+//   const root = hdkey.fromExtendedKey(masterPrivateKey);
+//
+//   const addressNode = root.derive(`m/44'/60'/0'/0/${i}`);
+//   //console.log('Address Node', addressNode);
+//   const privateKey = addressNode._privateKey.toString('hex');
+//   //const privateKey = '2d3edea1b2c0f8a399350985be554ecfd568f7009636d610a8e271973c17b27e';
+//   //console.log(privateKey);
+//
+//   return privateKey;
+// };
+//
+// (async()=>{
+//   const masterPrivateKey = await getMasterPrivateKeyFromMnemonic(mnemonic);
+//   console.log(masterPrivateKey);
+//   // const firstPrivateKey = await getPrivateKeyAtIndexFromMaster(Base58.decode(masterPrivateKey), 0);
+//   // console.log(firstPrivateKey);
+// })();
 
 
 
